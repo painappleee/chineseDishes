@@ -5,8 +5,8 @@ from django.core.validators import MaxValueValidator
 class Province(models.Model):
     name = models.TextField("Название")
     capital = models.TextField("Столица")
-    population = models.PositiveIntegerField("Население")
-    area = models.PositiveIntegerField("Площадь")
+    population = models.PositiveIntegerField("Население(чел.)")
+    area = models.PositiveIntegerField("Площадь(кв.км.)")
 
     class Meta:
         verbose_name = "Провинция"

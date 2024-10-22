@@ -27,9 +27,15 @@ class IngridientSerializer(serializers.ModelSerializer):
         model = Ingridient
         fields = "__all__"
 
-class Dish_IngridientSerializer(serializers.ModelSerializer):
+class Dish_IngridientListSerializer(serializers.ModelSerializer):
     dish = DishListSerializer(read_only=True)
     ingridient = IngridientSerializer(read_only=True)
+
+    class Meta:
+        model = Dish_Ingridient
+        fields = "__all__"
+
+class Dish_IngridientCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dish_Ingridient

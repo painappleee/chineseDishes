@@ -29,9 +29,9 @@ class DishesViewsetTestCase(TestCase):
         r = self.client.post('/api/dishes/',{
             "name":"Блюдо",
             "province": prvc.id,
-            "category":"десерт",
+            "category": 'Десерт',
             "description":"описание",
-            "spice_level" : "0"
+            "spice_level" : 0
         })
 
         new_dish_id = r.json()['id']
@@ -43,6 +43,22 @@ class DishesViewsetTestCase(TestCase):
         assert new_dish.name == "Блюдо"
         assert new_dish.province.id == prvc.id
         
+    def test_delete_dish(self):
+        dishes = baker.make("Dish", 10)
+        r = self.client.get('/api/dishes/')
+        data = r.json()
+        assert len(data) == 10
+
+        dish_id_to_delete = dishes[3].id
+        self.client.delete(f'/api/dishes/{dish_id_to_delete}/')
+
+        r = self.client.get('/api/dishes/')
+        data = r.json()
+        assert len(data) == 9
+
+        assert dish_id_to_delete not in [i['id'] for i in data]
+
+
 class ProvincesViewsetTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -58,6 +74,61 @@ class ProvincesViewsetTestCase(TestCase):
         assert prvc.name == data[0]['name']
         assert prvc.id == data[0]['id']
 
+    def test_create_province(self):
+
+        r = self.client.post('/api/provinces/',{
+            "name": "Провинция",
+            "capital": "Столица",
+            "population": 54736746,
+            "area": 67327
+        })
+
+        new_province_id = r.json()['id']
+
+        provinces = Province.objects.all()
+        assert len(provinces) == 1
+
+        new_province = Province.objects.filter(id=new_province_id).first()
+        assert new_province.name == "Провинция"
+
+    def test_delete_province(self):
+        provinces = baker.make("Province", 10)
+        r = self.client.get('/api/provinces/')
+        data = r.json()
+        assert len(data) == 10
+
+        province_id_to_delete = provinces[3].id
+        self.client.delete(f'/api/provinces/{province_id_to_delete}/')
+
+        r = self.client.get('/api/provinces/')
+        data = r.json()
+        assert len(data) == 9
+
+        assert province_id_to_delete not in [i['id'] for i in data]
+
+    def test_update_province(self):
+        provinces = baker.make("Province",10)
+        province: Province = provinces[2]
+
+        r = self.client.get(f'/api/provinces/{province.id}/')
+        data = r.json()
+        assert data['name'] == province.name
+
+        r = self.client.put(f'/api/provinces/{province.id}/',{
+            "name": "Провинция",
+            "capital": "Столица",
+            "population": 45763829,
+            "area": 53678
+        })
+        assert r.status_code == 200
+
+        r = self.client.get(f'/api/provinces/{province.id}/')
+        data  = r.json()
+        assert data['name'] == "Провинция"
+
+        province.refresh_from_db()
+        assert data['name'] == province.name
+
 class IngridientsViewsetTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -72,6 +143,57 @@ class IngridientsViewsetTestCase(TestCase):
         assert len(data) == 1
         assert ingrdnt.name == data[0]['name']
         assert ingrdnt.id == data[0]['id']
+
+    def test_create_ingridient(self):
+        
+        r = self.client.post('/api/ingridients/',{
+            "name":"Ингридиент",
+            "category": 'Крупы'
+        })
+
+        new_ingridient_id = r.json()['id']
+
+        ingridients = Ingridient.objects.all()
+        assert len(ingridients) == 1
+
+        new_ingridient = Ingridient.objects.filter(id=new_ingridient_id).first()
+        assert new_ingridient.name == "Ингридиент"
+
+    def test_delete_ingridient(self):
+        ingridients = baker.make("Ingridient", 10)
+        r = self.client.get('/api/ingridients/')
+        data = r.json()
+        assert len(data) == 10
+
+        ingridient_id_to_delete = ingridients[3].id
+        self.client.delete(f'/api/ingridients/{ingridient_id_to_delete}/')
+
+        r = self.client.get('/api/ingridients/')
+        data = r.json()
+        assert len(data) == 9
+
+        assert ingridient_id_to_delete not in [i['id'] for i in data]
+
+    def test_update_ingridient(self):
+        ingridients = baker.make("Ingridient",10)
+        ingridient: Ingridient = ingridients[2]
+
+        r = self.client.get(f'/api/ingridients/{ingridient.id}/')
+        data = r.json()
+        assert data['name'] == ingridient.name
+
+        r = self.client.put(f'/api/ingridients/{ingridient.id}/',{
+            "name": "Ингридиент",
+            "category": "Крупы"
+        })
+        assert r.status_code == 200
+
+        r = self.client.get(f'/api/ingridients/{ingridient.id}/')
+        data  = r.json()
+        assert data['name'] == "Ингридиент"
+
+        ingridient.refresh_from_db()
+        assert data['name'] == ingridient.name
 
 class Dish_IngridientsViewsetTestCase(TestCase):
     def setUp(self):
@@ -91,3 +213,43 @@ class Dish_IngridientsViewsetTestCase(TestCase):
         assert dsh_ingrdnt.id == data[0]['id']
         assert dsh_ingrdnt.ingridient == ingrdnt
         assert dsh_ingrdnt.dish == dsh
+
+    def test_create_dish_ingridient(self):
+
+        dsh = baker.make("Dish")
+        ingrdnt = baker.make("Ingridient")    
+
+        r = self.client.post('/api/dish_ingridients/',{
+            "quantity": 300,
+            "typeQuantity": 'гр',
+            "dish": dsh.id,
+            "ingridient": ingrdnt.id
+        })
+
+        new_dish_ingridient_id = r.json()['id']
+
+        dish_ingridients = Dish_Ingridient.objects.all()
+        assert len(dish_ingridients) == 1
+
+        new_dish_ingridient = Dish_Ingridient.objects.filter(id=new_dish_ingridient_id).first()
+        assert new_dish_ingridient.quantity == 300
+        assert new_dish_ingridient.ingridient.id == ingrdnt.id
+        assert new_dish_ingridient.dish.id == dsh.id
+
+    def test_delete_dish_ingridient(self):
+        dish_ingridients = baker.make("Dish_ingridient", 10)
+        r = self.client.get('/api/dish_ingridients/')
+        data = r.json()
+        assert len(data) == 10
+
+        dish_ingridient_id_to_delete = dish_ingridients[3].id
+        self.client.delete(f'/api/dish_ingridients/{dish_ingridient_id_to_delete}/')
+
+        r = self.client.get('/api/dish_ingridients/')
+        data = r.json()
+        assert len(data) == 9
+
+        assert dish_ingridient_id_to_delete not in [i['id'] for i in data]
+    
+
+        

@@ -2,7 +2,7 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework import mixins
 
 from chineseDishes.models import Province, Dish, Ingridient, Dish_Ingridient
-from chineseDishes.serializer import ProvinceSerializer, DishListSerializer, DishCreateSerializer, IngridientSerializer, Dish_IngridientSerializer
+from chineseDishes.serializer import ProvinceSerializer, DishListSerializer, DishCreateSerializer, IngridientSerializer, Dish_IngridientListSerializer, Dish_IngridientCreateSerializer
 
 class ProvincesViewSet(
     mixins.ListModelMixin, 
@@ -48,4 +48,9 @@ class Dish_IngridientsViewSet(
     mixins.DestroyModelMixin,
     GenericViewSet):
     queryset = Dish_Ingridient.objects.all()
-    serializer_class = Dish_IngridientSerializer
+
+    def get_serializer_class(self):
+        if(self.action=='list'):
+            return Dish_IngridientListSerializer
+        else:
+            return Dish_IngridientCreateSerializer
