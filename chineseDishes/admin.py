@@ -17,4 +17,4 @@ class IngridientAdmin(admin.ModelAdmin):
 
 @admin.register(Dish_Ingridient)
 class IngridientAdmin(admin.ModelAdmin):
-    list_display = ['dish','ingridient','quantity']
+    list_display = ['dish','ingridient','quantity','typeQuantity']

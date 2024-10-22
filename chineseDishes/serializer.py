@@ -3,6 +3,7 @@ from rest_framework import serializers
 from chineseDishes.models import Province, Dish, Ingridient, Dish_Ingridient
 
 class ProvinceSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Province
         fields = "__all__"
