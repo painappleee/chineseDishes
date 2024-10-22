@@ -58,6 +58,31 @@ class DishesViewsetTestCase(TestCase):
 
         assert dish_id_to_delete not in [i['id'] for i in data]
 
+    def test_update_dish(self):
+        dishes = baker.make("Dish",10)
+        dish: Dish =dishes[2]
+
+        r = self.client.get(f'/api/dishes/{dish.id}/')
+        data = r.json()
+        assert data['name'] == dish.name
+
+        prvc = baker.make("Province")
+
+        r = self.client.put(f'/api/dishes/{dish.id}/',{
+            "name": "Блюдо",
+            "description": "Описание",
+            "category": "Горячее",
+            "spice_level": 8,
+            "province": prvc.id
+        })
+        assert r.status_code == 200
+
+        r = self.client.get(f'/api/dishes/{dish.id}/')
+        data  = r.json()
+        assert data['name'] == "Блюдо"
+
+        dish.refresh_from_db()
+        assert data['name'] == dish.name
 
 class ProvincesViewsetTestCase(TestCase):
     def setUp(self):
@@ -250,6 +275,32 @@ class Dish_IngridientsViewsetTestCase(TestCase):
         assert len(data) == 9
 
         assert dish_ingridient_id_to_delete not in [i['id'] for i in data]
+    
+    def test_update_dish_ingridient(self):
+        dish_ingridients = baker.make("Dish_ingridient",10)
+        dish_ingridient: Dish_Ingridient = dish_ingridients[2]
+
+        r = self.client.get(f'/api/dish_ingridients/{dish_ingridient.id}/')
+        data = r.json()
+        assert data['quantity'] == dish_ingridient.quantity
+
+        dsh = baker.make("Dish")
+        ingrdnt = baker.make("Ingridient")
+
+        r = self.client.put(f'/api/dish_ingridients/{dish_ingridient.id}/',{
+            "quantity": 300,
+            "typeQuantity": 'гр',
+            "dish": dsh.id,
+            "ingridient": ingrdnt.id
+        })
+        assert r.status_code == 200
+
+        r = self.client.get(f'/api/dish_ingridients/{dish_ingridient.id}/')
+        data  = r.json()
+        assert data['quantity'] == 300
+
+        dish_ingridient.refresh_from_db()
+        assert data['quantity'] == dish_ingridient.quantity
     
 
         
