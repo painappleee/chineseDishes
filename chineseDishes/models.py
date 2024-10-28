@@ -52,7 +52,7 @@ class Dish(models.Model):
         verbose_name="Категория")
     spice_level = models.PositiveIntegerField(verbose_name="Уровень остроты", validators=[MaxValueValidator(10)])
     province = models.ForeignKey("Province", on_delete=models.CASCADE, null=True, verbose_name = "Провинция")
-    ingridients = models.ManyToManyField(Ingridient, through="Dish_Ingridient")
+    #ingridients = models.ManyToManyField(Ingridient, through="Dish_Ingridient")
 
     class Meta:
         verbose_name = "Блюдо"
