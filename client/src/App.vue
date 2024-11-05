@@ -9,51 +9,22 @@ onBeforeMount(()=>{
   axios.defaults.headers.common['X-CSRFToken'] = Cookies.get("csrftoken")
 })
 
-const provinces = ref([])
-const dishes = ref([])
-const ingridients = ref([])
-const dishIngridients = ref([])
 const loading = ref()
+
+const provinces = ref([])
 const provinceToAdd = ref({})
+
+const dishes = ref([])
 const dishToAdd = ref({})
-const ingridientToAdd = ref({})
-const dishIngridientToAdd = ref({})
 const dshCat = Choices.pairs("chineseDishes_dish_category")
+
+const ingridients = ref([])
+const ingridientToAdd = ref({})
 const ingrCat =  Choices.pairs("chineseDishes_ingridient_category")
+
+const dishIngridients = ref([])
+const dishIngridientToAdd = ref({})
 const qntType = Choices.pairs("chineseDishes_dish_ingridient_typeQuantity")
-
-
-async function fetchProvinces() {
-  loading.value = true
-  const r = await axios.get("/api/provinces/")
-  console.log(r.data)
-  provinces.value = r.data
-  loading.value = false
-}
-
-async function fetchDishes() {
-  loading.value = true
-  const r = await axios.get("/api/dishes/")
-  console.log(r.data)
-  dishes.value = r.data
-  loading.value = false
-}
-
-async function fetchIngridients() {
-  loading.value = true
-  const r = await axios.get("/api/ingridients/")
-  console.log(r.data)
-  ingridients.value = r.data
-  loading.value = false
-}
-
-async function fetchDishIngridients() {
-  loading.value = true
-  const r = await axios.get("/api/dish_ingridients/")
-  console.log(r.data)
-  dishIngridients.value = r.data
-  loading.value = false
-}
 
 async function onLoadClick() {
   await fetchDishIngridients()
@@ -66,7 +37,14 @@ onBeforeMount(async () => {
  await fetchDishIngridients()
 })
 
-
+//#region CRUD for Provinces
+async function fetchProvinces() {
+  loading.value = true
+  const r = await axios.get("/api/provinces/")
+  console.log(r.data)
+  provinces.value = r.data
+  loading.value = false
+}
 
 async function onProvinceAdd() {
   console.log(provinceToAdd.value)
@@ -74,6 +52,21 @@ async function onProvinceAdd() {
     ...provinceToAdd.value,
   });
   await fetchProvinces(); // переподтягиваю
+}
+
+async function onRemoveClickProvince(province) {
+  await axios.delete(`/api/provinces/${province.id}/`);
+  await fetchProvinces(); // переподтягиваю
+}
+//#endregion CRUD for Provinces end 
+
+//#region CRUD for Dishes
+async function fetchDishes() {
+  loading.value = true
+  const r = await axios.get("/api/dishes/")
+  console.log(r.data)
+  dishes.value = r.data
+  loading.value = false
 }
 
 async function onDishAdd() {
@@ -84,12 +77,19 @@ async function onDishAdd() {
   await fetchDishes(); // переподтягиваю
 }
 
-async function onDishIngridientAdd() {
-  console.log(dishIngridientToAdd.value)
-  await axios.post("/api/dish_ingridients/", {
-    ...dishIngridientToAdd.value,
-  });
-  await fetchDishIngridients(); // переподтягиваю
+async function onRemoveClickDish(dish) {
+  await axios.delete(`/api/dishes/${dish.id}/`);
+  await fetchDishes(); // переподтягиваю
+}
+//#endregion CRUD for Dishes end
+
+//#region CRUD for Ingridients
+async function fetchIngridients() {
+  loading.value = true
+  const r = await axios.get("/api/ingridients/")
+  console.log(r.data)
+  ingridients.value = r.data
+  loading.value = false
 }
 
 async function onIngridientAdd() {
@@ -100,6 +100,32 @@ async function onIngridientAdd() {
   await fetchIngridients(); // переподтягиваю
 }
 
+async function onRemoveClickIngridient(ingridient) {
+  await axios.delete(`/api/ingridients/${ingridient.id}/`);
+  await fetchIngridients(); // переподтягиваю
+}
+//#endregion CRUD for Inrgidients end
+
+//#region CRUD for DishIngridients
+async function fetchDishIngridients() {
+  loading.value = true
+  const r = await axios.get("/api/dish_ingridients/")
+  console.log(r.data)
+  dishIngridients.value = r.data
+  loading.value = false
+}
+async function onRemoveClickDishIngridient(dishIngridient) {
+  await axios.delete(`/api/dish_ingridients/${dishIngridient.id}/`);
+  await fetchDishIngridients(); // переподтягиваю
+}
+async function onDishIngridientAdd() {
+  console.log(dishIngridientToAdd.value)
+  await axios.post("/api/dish_ingridients/", {
+    ...dishIngridientToAdd.value,
+  });
+  await fetchDishIngridients(); // переподтягиваю
+}
+//#endregion CRUD for DishIngridients end
 </script>
 
 <template>
@@ -167,12 +193,24 @@ async function onIngridientAdd() {
     </div>
   </form>
 
+  <div class="row" v-for="p in provinces">
+    <div class="col-4" >{{ p.name}}</div>
+    <div class="col-3" >{{ p.capital }}</div>
+    <div class="col-2" >{{ p.population}} чел.</div>
+    <div class="col-2" >{{ p.area }} кв.км.</div>
+    <div class="col-1 mb-1">
+      <button class="btn btn-danger" @click="onRemoveClickProvince(p)">
+        <i class="bi bi-x">x</i>
+      </button>
+    </div>
+  </div>
+
   <!-- блюдо -->
     <hr>
   <h5>Блюдо</h5>
   <form @submit.prevent.stop="onDishAdd" >
     <div class="row">
-      <div class="col">
+      <div class="col-2">
         <div class="form-floating">
           <!-- ТУТ ПОДКЛЮЧИЛ dishToAdd.name -->
           <input
@@ -184,7 +222,7 @@ async function onIngridientAdd() {
           <label for="floatingInput">Название</label>
         </div>
       </div>
-      <div class="col">
+      <div class="col-4">
         <div class="form-floating">
           <!-- ТУТ ПОДКЛЮЧИЛ dishToAdd.description -->
           <input
@@ -196,7 +234,7 @@ async function onIngridientAdd() {
           <label for="floatingInput">Описание</label>
         </div>
       </div>
-      <div class="col-auto">
+      <div class="col-2">
           <!-- А ТУТ ПОДКЛЮЧИЛ К select -->
         <div class="form-floating">
           <select class="form-select" v-model="dishToAdd.province" required>
@@ -205,7 +243,7 @@ async function onIngridientAdd() {
           <label for="floatingInput">Провинция</label>
         </div>
       </div>
-      <div class="col-auto">
+      <div class="col-1">
           <!-- А ТУТ ПОДКЛЮЧИЛ К select -->
         <div class="form-floating">
           <select class="form-select" v-model="dishToAdd.category" required>
@@ -216,7 +254,7 @@ async function onIngridientAdd() {
       </div>
       <div class="col-2">
         <div class="form-floating">
-          <!-- ТУТ ПОДКЛЮЧИЛ dishToAdd.description -->
+          <!-- ТУТ ПОДКЛЮЧИЛ dishToAdd.spice_level -->
           <input
             type="number"
             class="form-control"
@@ -236,13 +274,25 @@ async function onIngridientAdd() {
     </div>
   </form>
 
+  <div class="row" v-for="d in dishes">
+    <div class="col-2" >{{ d.name}}</div>
+    <div class="col-4" >{{ d.description }}</div>
+    <div class="col-2" >{{ d.province.name }} </div>
+    <div class="col-2" >{{ d.category }} </div>
+    <div class="col-1" >{{ d.spice_level }} </div>
+    <div class="col-1 mb-1">
+      <button class="btn btn-danger" @click="onRemoveClickDish(d)">
+        <i class="bi bi-x">x</i>
+      </button>
+    </div>
+  </div>
 
   <!-- ингридиент -->
   <hr>
   <h5>Ингридиент</h5>
   <form @submit.prevent.stop="onIngridientAdd" >
     <div class="row">
-      <div class="col">
+      <div class="col-7">
         <div class="form-floating">
           <!-- ТУТ ПОДКЛЮЧИЛ ingridientToAdd.name -->
           <input
@@ -254,7 +304,7 @@ async function onIngridientAdd() {
           <label for="floatingInput">Название</label>
         </div>
       </div>
-      <div class="col-3">
+      <div class="col-4">
           <!-- А ТУТ ПОДКЛЮЧИЛ К select -->
         <div class="form-floating">
           <select class="form-select" v-model="ingridientToAdd.category" required>
@@ -270,6 +320,16 @@ async function onIngridientAdd() {
       </div>
     </div>
   </form>
+
+  <div class="row" v-for="i in ingridients">
+    <div class="col-7" >{{ i.name}}</div>
+    <div class="col-4" >{{ i.category }}</div>
+    <div class="col-1 mb-1">
+      <button class="btn btn-danger" @click="onRemoveClickIngridient(i)">
+        <i class="bi bi-x">x</i>
+      </button>
+    </div>
+  </div>
 
   <!-- блюдо-ингридиент -->
   <hr>
@@ -324,6 +384,18 @@ async function onIngridientAdd() {
       </div>
     </div>
   </form>
+
+  <div class="row" v-for="di in dishIngridients">
+    <div class="col-4" >{{ di.dish.name}}</div>
+    <div class="col-4" >{{ di.ingridient.name}}</div>
+    <div class="col-2" >{{ di.quantity }}</div>
+    <div class="col-1" >{{ di.typeQuantity }}</div>
+    <div class="col-1 mb-1">
+      <button class="btn btn-danger" @click="onRemoveClickDishIngridient(di)">
+        <i class="bi bi-x">x</i>
+      </button>
+    </div>
+  </div>
   <hr>
 
 </div>
