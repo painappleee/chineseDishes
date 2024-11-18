@@ -10,7 +10,7 @@ const provinces = ref([])
 const dishes = ref([])
 const dishToAdd = ref({})
 const dshCat = Choices.pairs("chineseDishes_dish_category")
-
+const dishToEdit = ref([])
 
 onBeforeMount(async () => {
  axios.defaults.headers.common['X-CSRFToken'] = Cookies.get("csrftoken")
@@ -39,6 +39,7 @@ async function onDishAdd() {
   await axios.post("/api/dishes/", {
     ...dishToAdd.value,
   });
+  dishToAdd.value = {}
   await fetchDishes(); // переподтягиваю
 }
 
@@ -47,6 +48,16 @@ async function onRemoveClickDish(dish) {
   await fetchDishes(); // переподтягиваю
 }
 
+async function onDishEditClick(dish) {
+  dishToEdit.value = { ...dish, province: dish.province.id };
+}
+
+async function onUpdateDish() {
+  await axios.put(`/api/dishes/${dishToEdit.value.id}/`, {
+    ...dishToEdit.value,
+  });
+  await fetchDishes();
+}
 
 //#endregion CRUD for Dishes end
 </script>
@@ -60,7 +71,6 @@ async function onRemoveClickDish(dish) {
     <div class="row">
       <div class="col-2">
         <div class="form-floating">
-          <!-- ТУТ ПОДКЛЮЧИЛ dishToAdd.name -->
           <input
             type="text"
             class="form-control"
@@ -72,7 +82,6 @@ async function onRemoveClickDish(dish) {
       </div>
       <div class="col-4">
         <div class="form-floating">
-          <!-- ТУТ ПОДКЛЮЧИЛ dishToAdd.description -->
           <input
             type="text"
             class="form-control"
@@ -83,7 +92,6 @@ async function onRemoveClickDish(dish) {
         </div>
       </div>
       <div class="col-2">
-          <!-- А ТУТ ПОДКЛЮЧИЛ К select -->
         <div class="form-floating">
           <select class="form-select" v-model="dishToAdd.province" required>
             <option :value="p.id" v-for="p in provinces">{{ p.name }}</option>
@@ -92,7 +100,6 @@ async function onRemoveClickDish(dish) {
         </div>
       </div>
       <div class="col-1">
-          <!-- А ТУТ ПОДКЛЮЧИЛ К select -->
         <div class="form-floating">
           <select class="form-select" v-model="dishToAdd.category" required>
             <option :value="c.value" v-for="c in dshCat">{{ c.label }}</option>
@@ -128,12 +135,110 @@ async function onRemoveClickDish(dish) {
     <div class="col-2" >{{ d.province.name }} </div>
     <div class="col-2" >{{ d.category }} </div>
     <div class="col-1" >{{ d.spice_level }} </div>
-    <div class="col-1 mb-1">
+    <div class="col-1">
+      <button
+        class="btn btn-success"
+        style="margin-right: 2px;"
+        @click="onDishEditClick(d)"
+        data-bs-toggle="modal"
+        data-bs-target="#editDishModal"
+      >
+        <i class="bi bi-pencil-fill"></i>
+      </button>
+
       <button class="btn btn-danger" @click="onRemoveClickDish(d)">
-        <i class="bi bi-x">x</i>
+        <i class="bi bi-x"></i>
       </button>
     </div>
-    <hr>
+    <hr class="mt-2">
+  </div>
+  <div class="modal fade" id="editDishModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        {{ dishToEdit }}
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">
+            Pедактировать
+          </h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+            <div class="row mb-2">
+              <div class="form-floating">
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="dishToEdit.name"
+                />
+                <label for="floatingInput">Название</label>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="form-floating">
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="dishToEdit.description"
+                />
+                <label for="floatingInput">Описание</label>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="form-floating">
+                <select class="form-select" v-model="dishToEdit.category" required>
+                  <option :value="c.value" v-for="c in dshCat">{{ c.label }}</option>
+                </select>
+                <label for="floatingInput">Категория</label>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="form-floating">
+                <select class="form-select" v-model="dishToEdit.province">
+                  <option :value="p.id" v-for="p in provinces">
+                    {{ p.name }}
+                  </option>
+                </select>
+                <label for="floatingInput">Провинция</label>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="form-floating">
+                <input
+                  type="number"
+                  class="form-control"
+                  v-model="dishToEdit.spice_level"
+                  min = "0"
+                  max = "10"
+                  required
+                />
+                <label for="floatingInput">Уровень остроты</label>
+              </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Закрыть
+          </button>
+          <button
+            data-bs-dismiss="modal"
+            type="button"
+            class="btn btn-primary"
+            @click="onUpdateDish"
+          >
+            Сохранить
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 </template>
