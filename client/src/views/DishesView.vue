@@ -10,7 +10,7 @@ const provinces = ref([])
 const dishes = ref([])
 const dishToAdd = ref({})
 const dshCat = Choices.pairs("chineseDishes_dish_category")
-const dishToEdit = ref([])
+const dishToEdit = ref({})
 
 onBeforeMount(async () => {
  axios.defaults.headers.common['X-CSRFToken'] = Cookies.get("csrftoken")
