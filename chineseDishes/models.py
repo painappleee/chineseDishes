@@ -7,6 +7,8 @@ class Province(models.Model):
     capital = models.TextField("Столица")
     population = models.PositiveIntegerField("Население(чел.)")
     area = models.PositiveIntegerField("Площадь(кв.км.)")
+    picture = models.ImageField("Изображение", null = True, upload_to= "chineseDishes" )
+
 
     class Meta:
         verbose_name = "Провинция"
@@ -52,6 +54,8 @@ class Dish(models.Model):
         verbose_name="Категория")
     spice_level = models.PositiveIntegerField(verbose_name="Уровень остроты", validators=[MaxValueValidator(10)])
     province = models.ForeignKey("Province", on_delete=models.CASCADE, null=True, verbose_name = "Провинция")
+    picture = models.ImageField("Изображение", null = True, upload_to= "chineseDishes" )
+
     #ingridients = models.ManyToManyField(Ingridient, through="Dish_Ingridient")
 
     class Meta:
