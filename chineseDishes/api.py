@@ -28,6 +28,14 @@ class DishesViewSet(
             return DishListSerializer
         else:
             return DishCreateSerializer
+        
+    def get_queryset(self):
+        qs = super().get_queryset()
+
+        if (self.request.user.is_superuser!=True):
+            qs = qs.filter(user=self.request.user)
+
+        return qs
 
 class IngridientsViewSet(
     mixins.ListModelMixin, 
@@ -54,3 +62,11 @@ class Dish_IngridientsViewSet(
             return Dish_IngridientListSerializer
         else:
             return Dish_IngridientCreateSerializer
+        
+    def get_queryset(self):
+        qs = super().get_queryset()
+
+        if (self.request.user.is_superuser!=True):
+            qs = qs.filter(user=self.request.user)
+
+        return qs

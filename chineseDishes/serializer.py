@@ -16,6 +16,11 @@ class DishListSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class DishCreateSerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        if 'request' in self.context:
+            validated_data['user'] = self.context['request'].user
+
+        return super().create(validated_data)
 
     class Meta:
         model = Dish
@@ -36,7 +41,12 @@ class Dish_IngridientListSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class Dish_IngridientCreateSerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        if 'request' in self.context:
+            validated_data['user'] = self.context['request'].user
 
+        return super().create(validated_data)
+     
     class Meta:
         model = Dish_Ingridient
         fields = "__all__"

@@ -55,6 +55,7 @@ class Dish(models.Model):
     spice_level = models.PositiveIntegerField(verbose_name="Уровень остроты", validators=[MaxValueValidator(10)])
     province = models.ForeignKey("Province", on_delete=models.CASCADE, null=True, verbose_name = "Провинция")
     picture = models.ImageField("Изображение", null = True, upload_to= "chineseDishes" )
+    user = models.ForeignKey("auth.User", verbose_name="Пользователь", on_delete=models.CASCADE, null=True)
 
     #ingridients = models.ManyToManyField(Ingridient, through="Dish_Ingridient")
 
@@ -80,6 +81,8 @@ class Dish_Ingridient(models.Model):
         max_length= 10,
         choices= QuantityType.choices,
         verbose_name="Измерение")
+    user = models.ForeignKey("auth.User", verbose_name="Пользователь", on_delete=models.CASCADE, null=True)
+
     class Meta:
         verbose_name = "Блюдо_Ингридент"
         verbose_name_plural = "Блюда_Ингриденты"
