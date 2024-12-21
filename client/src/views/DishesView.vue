@@ -5,6 +5,9 @@ import Cookies from 'js-cookie'
 
 import Choices from "../assets/choices-en-us.js"
 
+const userStore = useUserStore()
+const userInfo = storeToRefs(userStore)
+
 const provinces = ref([])
 
 const dishes = ref([])
@@ -76,7 +79,6 @@ async function onDishEditClick(dish) {
 }
 
 async function onUpdateDish() {
-  console.log("gvfdhbjsfknlma;,")
   const formData = new FormData()
 
   if (dishEditPicture.value) {
@@ -215,7 +217,7 @@ async function onSmallPictureClick(picture) {
                 <span class="badge bg-warning text-dark">{{ d.spice_level }}</span>
               </div>
               <!-- Кнопки -->
-              <div class="mt-3 d-flex">
+              <div v-if=""class="mt-3 d-flex">
                 <button class="btn btn-success me-2" @click="onDishEditClick(d)" data-bs-toggle="modal"
                   data-bs-target="#editDishModal">
                   <i class="bi bi-pencil-fill"></i> Редактировать

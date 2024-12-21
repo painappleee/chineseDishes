@@ -68,7 +68,7 @@ async function onUpdateProvince() {
         formData.append('picture', provinceEditPicture.value)
     }
     else {
-        formData.append('picture', )
+        formData.append('picture', "")
     }
 
     formData.set('name', provinceToEdit.value.name)

@@ -114,7 +114,7 @@ class UserProfileViewSet(GenericViewSet):
     @action(url_path="register", detail=False, methods=["POST"])
     def register(self, request, *args, **kwargs):
         serializer = self.RegisterSerializer(data=request.data)
-        
+
         if (serializer.is_valid()):
             userdata = serializer.validated_data
 
@@ -140,3 +140,50 @@ class UserProfileViewSet(GenericViewSet):
                 "username": user.username
             })
         return Response(data)
+    
+class ресепти(GenericViewSet):
+    @action(url_path="полутить", detail=False, methods=["GET"])
+    def полутить(self, *args, **kwargs):
+        return Response("всё так вкусно, давай лучше это скушаем!")
+    
+    @action(url_path="ктозопа", detail=False, methods=["GET"])
+    def ктозопа(self, *args, **kwargs):
+        return Response("ты не зопа )( 😊😊😊")
+    
+    @action(url_path="ктомаленьки", detail=False, methods=["GET"])
+    def ктомаленьки(self, *args, **kwargs):
+        return Response("я")
+    
+class RecipesViewSet(GenericViewSet):
+    def get_queryset(self):
+        return Dish.objects.all()
+    
+    @action(url_path="get", detail=False, methods=["GET"])
+    def getRecipes(self, *args, **kwargs):
+        dishes_all = Dish.objects.all()
+        ingridients_all = Dish_Ingridient.objects.all()
+
+        ingridients_by_dish = {}
+        for ingridient in ingridients_all:
+            ingridients_by_dish.setdefault(ingridient.dish_id, []).append({
+                "id": ingridient.id,
+                "ingridient": ingridient.ingridient.name,
+                "quantity": ingridient.quantity,
+                "typeQuantity": ingridient.typeQuantity
+            })
+
+        dishes_data = []
+        for dish in dishes_all:
+            dish_data = {
+                "id": dish.id,
+                "name": dish.name,
+                "province": dish.province.name,
+                "picture": dish.picture.url if dish.picture else None,
+                "ingridients": ingridients_by_dish.get(dish.id, []),  # Список ингредиентов
+            }
+            dishes_data.append(dish_data)
+
+        return Response(dishes_data)
+        
+
+    

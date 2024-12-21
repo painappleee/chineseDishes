@@ -29,7 +29,10 @@
         <div class="collapse navbar-collapse justify-content-between" id="navbarNavDropdown">
           <ul class="navbar-nav">
             <li class="nav-item active">
-              <router-link class="nav-link" to="/" >Блюда</router-link>
+              <router-link class="nav-link" to="/" >Рецепты</router-link>
+            </li>
+            <li class="nav-item active">
+              <router-link class="nav-link" to="/dishes" >Блюда</router-link>
             </li>
             <li class="nav-item">
               <router-link class="nav-link" to="/provinces" >Провинции</router-link>

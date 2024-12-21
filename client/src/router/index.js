@@ -6,12 +6,18 @@ import IngridientsView from '@/views/IngridientsView.vue'
 import Dish_IngridientsView from '@/views/Dish_IngridientsView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
+import RecipesView from '@/views/RecipesView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
+      name: "RecipesView",
+      component: RecipesView
+    },
+    {
+      path: "/dishes",
       name: "DishesView",
       component: DishesView
     },
