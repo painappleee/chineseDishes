@@ -23,13 +23,14 @@ from django.conf.urls.static import static
 from chineseDishes import views
 from rest_framework.routers import DefaultRouter
 
-from chineseDishes.api import ProvincesViewSet, DishesViewSet, IngridientsViewSet, Dish_IngridientsViewSet
+from chineseDishes.api import ProvincesViewSet, DishesViewSet, IngridientsViewSet, Dish_IngridientsViewSet, UserProfileViewSet
 
 router = DefaultRouter()
 router.register("provinces", ProvincesViewSet, basename="provinces")
 router.register("dishes", DishesViewSet, basename="dishes")
 router.register("ingridients", IngridientsViewSet, basename="ingridients")
 router.register("dish_ingridients", Dish_IngridientsViewSet, basename="dish_ingridients")
+router.register("user", UserProfileViewSet, basename="user")
 
 urlpatterns = [
     path('',views.ShowProvincesView.as_view()),
