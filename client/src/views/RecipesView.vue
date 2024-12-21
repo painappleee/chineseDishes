@@ -24,7 +24,7 @@ onBeforeMount(async () => {
       <div class="col-md-auto mb-4" v-for="r in recipes">
         <div class="card" style="width: 18rem; min-height: 450px">
           <!-- Название блюда -->
-          <div class="card-body text-center" style="height: 80px; flex-grow: 0;">
+          <div class="card-body text-center" style="height: 60px; flex-grow: 0;">
             <h5 class="card-title">{{ r.name }}</h5>
           </div>
           
@@ -34,15 +34,17 @@ onBeforeMount(async () => {
           </div>
           
           <!-- Провинция -->
-          <div class="card-body">
+          <div class="card-body pb-0">
             <span class="badge bg-primary">{{ r.province}}</span>
           </div>
           
           <!-- Список ингредиентов -->
-          <div class="card-body" style="flex-grow: 1;">
+          <div class="card-body pt-0" style="flex-grow: 1;">
             <ul class="list-unstyled">
-              <li v-for="ingredient in r.ingridients">
-                <strong>{{ ingredient.ingridient }}</strong> - {{ ingredient.quantity }} {{ ingredient.typeQuantity }}
+              <li v-for="ingredient in r.ingridients" class="d-flex justify-content-between">
+                <strong>{{ ingredient.ingridient }}</strong>
+                <div class="dots"></div>
+                {{ ingredient.quantity }}{{ ingredient.typeQuantity }}
               </li>
             </ul>
           </div>
@@ -54,4 +56,13 @@ onBeforeMount(async () => {
 </template>
   
 
-<style scoped></style>
+<style scoped>
+.dots {
+  flex-grow: 1;  /* Заполняет всё пространство между элементами */
+  background: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5ZHgc-sDZ9f5ETYh9OZQoEACKH5GbuZa8Vg&s) repeat-x center;
+  background-size: 7px 7px;  /* Задаём размер точки */
+  margin-top: 10px;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+</style>

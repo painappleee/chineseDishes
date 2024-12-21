@@ -12,6 +12,8 @@ export const useUserStore = defineStore("UserStore", ()=>{
         isAuthenticated.value = r.data.is_authenticated
         isSuperuser.value = r.data.is_superuser
         username.value = r.data.username
+
+        console.log(r.data)
         
     }
 

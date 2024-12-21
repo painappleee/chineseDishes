@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
 from chineseDishes.models import Province, Dish, Ingridient, Dish_Ingridient
-from chineseDishes.serializer import ProvinceSerializer, DishListSerializer, DishCreateSerializer, IngridientSerializer, Dish_IngridientListSerializer, Dish_IngridientCreateSerializer
+from chineseDishes.serializer import ProvinceListSerializer, ProvinceCreateSerializer, DishListSerializer, DishCreateSerializer, IngridientListSerializer, IngridientCreateSerializer, Dish_IngridientListSerializer, Dish_IngridientCreateSerializer 
 
 class ProvincesViewSet(
     mixins.ListModelMixin, 
@@ -19,7 +19,12 @@ class ProvincesViewSet(
     mixins.DestroyModelMixin,
     GenericViewSet):
     queryset = Province.objects.all()
-    serializer_class = ProvinceSerializer
+    
+    def get_serializer_class(self):
+        if(self.action=='list'):
+            return ProvinceListSerializer
+        else:
+            return ProvinceCreateSerializer
 
 class DishesViewSet(
     mixins.ListModelMixin, 
@@ -36,14 +41,6 @@ class DishesViewSet(
         else:
             return DishCreateSerializer
         
-    def get_queryset(self):
-        qs = super().get_queryset()
-
-        if (self.request.user.is_superuser!=True):
-            qs = qs.filter(user=self.request.user)
-
-        return qs
-
 class IngridientsViewSet(
     mixins.ListModelMixin, 
     mixins.CreateModelMixin,
@@ -52,7 +49,12 @@ class IngridientsViewSet(
     mixins.DestroyModelMixin,
     GenericViewSet):
     queryset = Ingridient.objects.all()
-    serializer_class = IngridientSerializer
+
+    def get_serializer_class(self):
+        if(self.action=='list'):
+            return IngridientListSerializer
+        else:
+            return IngridientCreateSerializer
 
 
 class Dish_IngridientsViewSet(
@@ -137,7 +139,7 @@ class UserProfileViewSet(GenericViewSet):
         if user.is_authenticated:
             data.update({
                 "is_superuser": user.is_superuser,
-                "username": user.username
+                "username": user.username,
             })
         return Response(data)
     

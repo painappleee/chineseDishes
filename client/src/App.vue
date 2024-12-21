@@ -4,6 +4,12 @@
     import { useRoute } from 'vue-router';
     import router from '@/router';   
 
+    import { useUserStore } from '@/stores/userStore.js'
+    import { storeToRefs } from 'pinia'
+
+    const userStore = useUserStore()
+    const userInfo = storeToRefs(userStore)
+
     const route = useRoute();
 
     const isAuthPage = computed(() =>
@@ -47,7 +53,7 @@
           <ul class="navbar-nav">
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Пользователь
+                {{ userInfo.username }}
               </a>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="/admin">Админка</a></li>

@@ -3,6 +3,13 @@ import { onBeforeMount, ref } from 'vue'
 import axios from "axios"
 import Cookies from 'js-cookie'
 
+import { useUserStore } from '@/stores/userStore.js'
+import { storeToRefs } from 'pinia'
+
+const userStore = useUserStore()
+const userInfo = storeToRefs(userStore)
+
+
 const provinces = ref([])
 const provinceToAdd = ref({})
 const provinceToEdit = ref({})
@@ -172,7 +179,7 @@ async function onSmallPictureClick(picture) {
                     <!-- Картинка -->
                     <div class="col-md-3 d-flex align-items-center justify-content-center">
                         <div v-show="p.picture">
-                            <img :src="p.picture" class="img-fluid rounded"
+                            <img :src="p.picture" class="img-fluid rounded m-2"
                                 style="max-height: 180px; cursor: pointer;" @click="onSmallPictureClick(p.picture)"
                                 data-bs-toggle="modal" data-bs-target="#bigPictureModal" />
                         </div>
@@ -191,7 +198,7 @@ async function onSmallPictureClick(picture) {
                                 <strong>Площадь:</strong> {{ p.area }} кв.км.
                             </p>
                             <!-- Кнопки -->
-                            <div class="mt-3 d-flex">
+                            <div v-if="userInfo.isSuperuser.value == true || userInfo.username.value == p.user" class="mt-3 d-flex">
                                 <button class="btn btn-success me-2" @click="onProvinceEditClick(p)"
                                     data-bs-toggle="modal" data-bs-target="#editProvinceModal">
                                     <i class="bi bi-pencil-fill"></i> Редактировать

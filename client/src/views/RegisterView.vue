@@ -17,6 +17,7 @@
 
             try{
                 await axios.post("api/user/register/", registerData.value)
+                userStore.getInfo()
                 router.push("/")
             }
             catch(e){

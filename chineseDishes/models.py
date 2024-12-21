@@ -8,6 +8,7 @@ class Province(models.Model):
     population = models.PositiveIntegerField("Население(чел.)")
     area = models.PositiveIntegerField("Площадь(кв.км.)")
     picture = models.ImageField("Изображение", null = True, upload_to= "chineseDishes" )
+    user = models.ForeignKey("auth.User", verbose_name="Пользователь", on_delete=models.CASCADE, null=True)
 
 
     class Meta:
@@ -30,6 +31,7 @@ class Ingridient(models.Model):
         choices= IngridientCategory.choices,
         verbose_name="Категория")
     name = models.TextField("Название")
+    user = models.ForeignKey("auth.User", verbose_name="Пользователь", on_delete=models.CASCADE, null=True)
 
 
     class Meta:

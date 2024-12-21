@@ -1,5 +1,7 @@
 <script setup>
 import { onBeforeMount, ref } from 'vue'
+import { useUserStore } from '@/stores/userStore.js'
+import { storeToRefs } from 'pinia'
 import axios from "axios"
 import Cookies from 'js-cookie'
 
@@ -25,6 +27,8 @@ const pictureToBig = ref()
 
 onBeforeMount(async () => {
   axios.defaults.headers.common['X-CSRFToken'] = Cookies.get("csrftoken")
+
+  console.log(Cookies.get("csrftoken"))
 
   await fetchProvinces()
   await fetchDishes()
@@ -200,7 +204,7 @@ async function onSmallPictureClick(picture) {
           <!-- Картинка -->
           <div class="col-md-2 d-flex align-items-center justify-content-center">
             <div v-show="d.picture">
-              <img :src="d.picture" alt="нет фото" class="img-fluid rounded" style="max-height: 200px; cursor: pointer; "
+              <img :src="d.picture" alt="нет фото" class="img-fluid rounded m-2" style="max-height: 180px; cursor: pointer; "
                 @click="onSmallPictureClick(d.picture)" data-bs-toggle="modal" data-bs-target="#bigPictureModal" />
             </div>
           </div>
@@ -214,10 +218,11 @@ async function onSmallPictureClick(picture) {
               <div class="d-flex flex-wrap">
                 <span class="badge bg-primary me-2">{{ d.province.name }}</span>
                 <span class="badge bg-secondary me-2">{{ d.category }}</span>
-                <span class="badge bg-warning text-dark">{{ d.spice_level }}</span>
+                <span class="badge bg-warning text-dark me-2">{{ d.spice_level }}</span>
+                <span class="badge bg-info text-dark">{{ d.user.username}}</span>
               </div>
               <!-- Кнопки -->
-              <div v-if=""class="mt-3 d-flex">
+              <div v-if="userInfo.isSuperuser.value == true || userInfo.username.value == d.user.username" class="mt-3 d-flex">
                 <button class="btn btn-success me-2" @click="onDishEditClick(d)" data-bs-toggle="modal"
                   data-bs-target="#editDishModal">
                   <i class="bi bi-pencil-fill"></i> Редактировать

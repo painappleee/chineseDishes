@@ -5,6 +5,12 @@ import Cookies from 'js-cookie'
 
 import Choices from "../assets/choices-en-us.js"
 
+import { useUserStore } from '@/stores/userStore.js'
+import { storeToRefs } from 'pinia'
+
+const userStore = useUserStore()
+const userInfo = storeToRefs(userStore)
+
 onBeforeMount(async () => {
     axios.defaults.headers.common['X-CSRFToken'] = Cookies.get("csrftoken")
 
@@ -95,7 +101,7 @@ async function onUpdateIngridient() {
                         </div>
                     </div>
                     <!-- Кнопки -->
-                    <div class="col-md-4 text-end pe-3">
+                    <div v-if="userInfo.isSuperuser.value == true || userInfo.username.value == i.user.username" class="col-md-4 text-end pe-3">
                         <button class="btn btn-success me-2" @click="onIngridientEditClick(i)" data-bs-toggle="modal"
                             data-bs-target="#editIngridientModal">
                             <i class="bi bi-pencil-fill"></i> Редактировать

@@ -19,6 +19,7 @@
 
         try{
             await axios.post("api/user/login/", loginData.value)
+            userStore.getInfo()
             router.push("/")
         }
         catch(e){
