@@ -44,10 +44,10 @@
               <router-link class="nav-link" to="/provinces" >Провинции</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/ingridients" >Ингридиенты</router-link>
+              <router-link class="nav-link" to="/ingridients" >Ингредиенты</router-link>
             </li>   
             <li class="nav-item">
-              <router-link class="nav-link" to="/dish_ingridients" >Блюдо-ингридиенты</router-link>
+              <router-link class="nav-link" to="/dish_ingridients" >Блюдо-ингредиенты</router-link>
             </li>       
           </ul>
           <ul class="navbar-nav">

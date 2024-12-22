@@ -22,6 +22,8 @@ const provinceEditPicture = ref()
 
 const pictureToBig = ref()
 
+const stats = ref({})
+
 onBeforeMount(async () => {
     axios.defaults.headers.common['X-CSRFToken'] = Cookies.get("csrftoken")
 
@@ -82,6 +84,7 @@ async function onUpdateProvince() {
     formData.set('capital', provinceToEdit.value.capital)
     formData.set('area', provinceToEdit.value.area)
     formData.set('population', provinceToEdit.value.population)
+    formData.set('user', userInfo.value.user_id)
 
     await axios.put(`/api/provinces/${provinceToEdit.value.id}/`, formData, {
         headers: {
@@ -118,6 +121,12 @@ async function onSmallPictureClick(picture) {
     pictureToBig.value = picture
 }
 
+
+async function onStatsModelOpen() {
+  const r = await axios.get("/api/provinces/stats")
+  stats.value = r.data
+}
+
 //#endregion CRUD for Provinces end
 
 
@@ -126,6 +135,9 @@ async function onSmallPictureClick(picture) {
 <template>
     <div class="container">
         <!-- провинция -->
+        <div class="d-flex justify-content-end">
+        <button @click="onStatsModelOpen" data-bs-toggle="modal" data-bs-target="#statsModal" class="btn btn-warning">Статистика</button>
+    </div>
         <hr>
         <h5>Провинция</h5>
         <form @submit.prevent.stop="onProvinceAdd">
@@ -159,7 +171,7 @@ async function onSmallPictureClick(picture) {
                 </div>
                 <div class="col-auto">
                     <button v-if="provincePicture" class="btn btn-danger"
-                        style="position: relative; zoom: 0.5; left:175px; bottom: 35px"
+                        style="position: relative; zoom: 0.5; right: -50px; bottom: 35px"
                         @click="onRemoveNewPicture($event)">
                         <i class="bi bi-x"></i>
                     </button>
@@ -292,6 +304,26 @@ async function onSmallPictureClick(picture) {
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="statsModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="statsModalLabel">Статистика провинций</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group">
+                    <li class="list-group-item">Количество: {{stats.count}}</li>
+                    <li class="list-group-item">Максимальная популяция провинции: {{stats.maxPop}} чел.</li>
+                    <li class="list-group-item">Минимальная популяция провинции: {{stats.minPop}} чел.</li>
+                    <li class="list-group-item">Максимальная площадь провинции: {{stats.maxArea}} кв.км.</li>
+                    <li class="list-group-item">Минимальная площадь провинции: {{stats.minArea}} кв.км.</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        </div>        
 
 
     </div>

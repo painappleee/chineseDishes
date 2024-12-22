@@ -34,6 +34,7 @@ router.register("user", UserProfileViewSet, basename="user")
 router.register("ресепти", ресепти, basename="ресепти")
 router.register("recipes", RecipesViewSet, basename="recipes")
 
+
 urlpatterns = [
     path('',views.ShowProvincesView.as_view()),
     path('admin/', admin.site.urls),

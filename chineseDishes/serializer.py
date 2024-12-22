@@ -11,6 +11,9 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ProvinceCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
+        if 'request' in self.context:
+            validated_data['user'] = self.context['request'].user
+            
         if (validated_data['picture']== None):
             validated_data['picture'] = "chineseDishes/noimage.png"
 

@@ -7,6 +7,7 @@ from rest_framework import serializers
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.db.models import Avg, Count, Max, Min
 
 from chineseDishes.models import Province, Dish, Ingridient, Dish_Ingridient
 from chineseDishes.serializer import ProvinceListSerializer, ProvinceCreateSerializer, DishListSerializer, DishCreateSerializer, IngridientListSerializer, IngridientCreateSerializer, Dish_IngridientListSerializer, Dish_IngridientCreateSerializer 
@@ -18,7 +19,30 @@ class ProvincesViewSet(
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
     GenericViewSet):
+
     queryset = Province.objects.all()
+
+    class StatsSerializer(serializers.Serializer):
+        count = serializers.IntegerField()
+        maxPop = serializers.IntegerField()
+        minPop = serializers.IntegerField()
+        maxArea = serializers.IntegerField()
+        minArea = serializers.IntegerField()
+
+
+    @action(detail=False, methods=["GET"], url_path="stats")
+    def get_stats(self, request, *args, **kwargs):
+        stats = Province.objects.aggregate(
+            count = Count("*"),
+            maxPop = Max("population"),
+            minPop = Min("population"),
+            maxArea = Max("area"),
+            minArea = Min("area"),              
+        )
+
+        serializer = self.StatsSerializer(instance=stats)
+
+        return Response(serializer.data)
     
     def get_serializer_class(self):
         if(self.action=='list'):
@@ -33,7 +57,27 @@ class DishesViewSet(
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
     GenericViewSet):
+
     queryset = Dish.objects.all()
+
+    class StatsSerializer(serializers.Serializer):
+        count = serializers.IntegerField()
+        avg = serializers.FloatField()
+        max = serializers.IntegerField()
+        min = serializers.IntegerField()
+
+    @action(detail=False, methods=["GET"], url_path="stats")
+    def get_stats(self, request, *args, **kwargs):
+        stats = Dish.objects.aggregate(
+            count = Count("*"),
+            avg = Avg("spice_level"),
+            max = Max("spice_level"),
+            min = Min("spice_level"),             
+        )
+
+        serializer = self.StatsSerializer(instance=stats)
+
+        return Response(serializer.data)
 
     def get_serializer_class(self):
         if(self.action=='list'):

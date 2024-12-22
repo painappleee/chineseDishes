@@ -25,10 +25,11 @@ const dishEditPicture = ref()
 
 const pictureToBig = ref()
 
+const stats = ref({})
+
 onBeforeMount(async () => {
   axios.defaults.headers.common['X-CSRFToken'] = Cookies.get("csrftoken")
 
-  console.log(Cookies.get("csrftoken"))
 
   await fetchProvinces()
   await fetchDishes()
@@ -135,12 +136,20 @@ async function onSmallPictureClick(picture) {
   pictureToBig.value = picture
 }
 
+async function onStatsModelOpen() {
+  const r = await axios.get("/api/dishes/stats")
+  stats.value = r.data
+}
+
 //#endregion CRUD for Dishes end
 
 </script>
 
 <template>
   <div class="container">
+    <div class="d-flex justify-content-end">
+        <button @click="onStatsModelOpen" data-bs-toggle="modal" data-bs-target="#statsModal" class="btn btn-warning">Статистика</button>
+    </div>
     <!-- блюдо -->
     <hr>
     <h5>Блюдо</h5>
@@ -185,7 +194,7 @@ async function onSmallPictureClick(picture) {
         </div>
         <div class="col-auto">
           <button v-if="dishPicture" class="btn btn-danger"
-            style="position: relative; zoom: 0.5; left:140px; bottom: 35px" @click="onRemoveNewPicture($event)">
+            style="position: relative; zoom: 0.5; right: -50px ; bottom: 35px" @click="onRemoveNewPicture($event)">
             <i class="bi bi-x"></i>
           </button>
           <img :src="dishAddImageUrl" style="max-height: 60px" alt="">
@@ -236,6 +245,7 @@ async function onSmallPictureClick(picture) {
         </div>
       </div>
     </div>
+    
     <div class="modal fade" id="editDishModal" tabindex="-1">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -323,6 +333,28 @@ async function onSmallPictureClick(picture) {
         </div>
       </div>
     </div>
+
+    
+    <div class="modal fade" id="statsModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="statsModalLabel">Статистика блюд</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
+            <ul class="list-group">
+              <li class="list-group-item">Количество: {{stats.count}}</li>
+              <li class="list-group-item">Средняя острота блюда: {{stats.avg}}</li>
+              <li class="list-group-item">Максимальная острота блюда: {{stats.max}}</li>
+              <li class="list-group-item">Минимальная острота блюда: {{stats.min}}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
   </div>
 </template>
 

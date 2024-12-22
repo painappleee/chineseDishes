@@ -11,10 +11,7 @@ export const useUserStore = defineStore("UserStore", ()=>{
         const r = await axios.get('/api/user/info/')
         isAuthenticated.value = r.data.is_authenticated
         isSuperuser.value = r.data.is_superuser
-        username.value = r.data.username
-
-        console.log(r.data)
-        
+        username.value = r.data.username 
     }
 
     getInfo()
