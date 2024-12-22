@@ -133,7 +133,7 @@ async function onStatsModelOpen() {
 </script>
 
 <template>
-    <div class="container">
+        <div class="container">
         <!-- провинция -->
         <div class="d-flex justify-content-end">
         <button @click="onStatsModelOpen" data-bs-toggle="modal" data-bs-target="#statsModal" class="btn btn-warning">Статистика</button>
@@ -192,7 +192,7 @@ async function onStatsModelOpen() {
                     <div class="col-md-3 d-flex align-items-center justify-content-center">
                         <div v-show="p.picture">
                             <img :src="p.picture" class="img-fluid rounded m-2"
-                                style="max-height: 180px; cursor: pointer;" @click="onSmallPictureClick(p.picture)"
+                                style="max-width: 300px; cursor: pointer;" @click="onSmallPictureClick(p.picture)"
                                 data-bs-toggle="modal" data-bs-target="#bigPictureModal" />
                         </div>
                     </div>
@@ -210,7 +210,7 @@ async function onStatsModelOpen() {
                                 <strong>Площадь:</strong> {{ p.area }} кв.км.
                             </p>
                             <!-- Кнопки -->
-                            <div v-if="userInfo.isSuperuser.value == true || userInfo.username.value == p.user" class="mt-3 d-flex">
+                            <div v-if="userInfo.isSuperuser.value == true || userInfo.username.value == p.user.username" class="mt-3 d-flex">
                                 <button class="btn btn-success me-2" @click="onProvinceEditClick(p)"
                                     data-bs-toggle="modal" data-bs-target="#editProvinceModal">
                                     <i class="bi bi-pencil-fill"></i> Редактировать

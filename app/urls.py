@@ -31,7 +31,6 @@ router.register("dishes", DishesViewSet, basename="dishes")
 router.register("ingridients", IngridientsViewSet, basename="ingridients")
 router.register("dish_ingridients", Dish_IngridientsViewSet, basename="dish_ingridients")
 router.register("user", UserProfileViewSet, basename="user")
-router.register("ресепти", ресепти, basename="ресепти")
 router.register("recipes", RecipesViewSet, basename="recipes")
 
 

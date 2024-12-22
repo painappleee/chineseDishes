@@ -24,6 +24,7 @@ class Ingridient(models.Model):
         MEAT = 'Мясо','Мясо'
         MILK = 'Молочные продукты','Молочные продукты'
         SEREALS = 'Крупы','Крупы'
+        
 
 
     category = models.CharField(

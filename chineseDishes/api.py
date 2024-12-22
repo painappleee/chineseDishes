@@ -186,19 +186,7 @@ class UserProfileViewSet(GenericViewSet):
                 "username": user.username,
             })
         return Response(data)
-    
-class ресепти(GenericViewSet):
-    @action(url_path="полутить", detail=False, methods=["GET"])
-    def полутить(self, *args, **kwargs):
-        return Response("всё так вкусно, давай лучше это скушаем!")
-    
-    @action(url_path="ктозопа", detail=False, methods=["GET"])
-    def ктозопа(self, *args, **kwargs):
-        return Response("ты не зопа )( 😊😊😊")
-    
-    @action(url_path="ктомаленьки", detail=False, methods=["GET"])
-    def ктомаленьки(self, *args, **kwargs):
-        return Response("я")
+
     
 class RecipesViewSet(GenericViewSet):
     def get_queryset(self):

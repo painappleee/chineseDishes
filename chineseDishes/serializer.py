@@ -13,7 +13,7 @@ class ProvinceCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         if 'request' in self.context:
             validated_data['user'] = self.context['request'].user
-            
+
         if (validated_data['picture']== None):
             validated_data['picture'] = "chineseDishes/noimage.png"
 
@@ -76,7 +76,13 @@ class IngridientListSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class IngridientCreateSerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        if 'request' in self.context:
+            validated_data['user'] = self.context['request'].user
+            
 
+        return super().create(validated_data)
+    
     class Meta:
         model = Ingridient
         fields = "__all__"
